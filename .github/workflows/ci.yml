@@ -1,0 +1,212 @@
+name: Build and Deploy
+
+on:
+  push:
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+          architecture: 'x64'
+
+      - name: Install
+        run: |
+          pip install -r requirements.txt
+          pip install flake8
+          pip install pytest
+          pip install pytest-cov
+
+      - name: Lint
+        run: 'flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics'
+
+      - name: Test
+        run: |
+              pytest -m "not ffmpeg" --doctest-modules \
+              --junitxml=junit/test-results.xml --cov=com \
+              --cov-report=xml --cov-report=html
+
+      - name: Build
+        run: pyinstaller -F --key="${{ secrets.PYINSTALLER_PASSWORD }}" -y render.spec
+
+        # " TODO: add caching for this build. The build can cache so why not use it
+
+      - name: Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ubuntu-latest
+          path: dist
+
+      # - name: Not Master
+      #   if: github.ref != 'refs/heads/master'
+      #   run: |
+      #     echo "not running from master"
+      #     exit 1
+
+      - name: Get Change
+        id: changes
+        run: |
+          echo "# ${{ github.ref }}" > changes.txt
+          sed -n \
+          "$(sed -n '/^## /=' CHANGELOG.md | sed -n '1'p),$(sed -n '/^## /=' CHANGELOG.md | sed -n '2'p)"p \
+          CHANGELOG.md > tmp_changes.txt
+
+          VERSION=$(head -1 tmp_changes.txt | cut -d '[' -f 2 | cut -d ']' -f 1)
+          if [ "refs/tags/v$VERSION" != "${{ github.ref }}" ]; then
+              echo $VERSION
+              echo "${{ github.ref }}"
+              echo "changelog version mismatch";
+              exit 1;
+          fi
+
+          cat tmp_changes.txt | head -n -1 >> changes.txt
+          echo ::set-output name=log::$(cat changes.txt)
+
+      - name: Upload change
+        uses: actions/upload-artifact@v2
+        with:
+          name: changes
+          path: changes.txt
+
+  build:
+    needs: test
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [macos-latest, windows-latest]
+      max-parallel: 3
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+          # Optional - x64 or x86 architecture, defaults to x64
+          architecture: 'x64'
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Build
+        env:
+          PACKAGE_DLL: ${{ startsWith(matrix.os, 'windows') }}
+        run: pyinstaller -F --key="${{ secrets.PYINSTALLER_PASSWORD }}" -y render.spec
+        # "
+
+      - name: Sign Windows
+        if: startsWith(matrix.os, 'windows')
+        env:
+          CSC_LINK: ${{ secrets.CERTIFICATE_WINDOWS_PFX }}
+          CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_PFX_PASSWORD }}
+          SIGN_TOOL: "C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe"
+          SHA1: ${{ secrets.WINDOWS_PFX_SHA1 }}
+        run: |
+          touch windows.pfx; `
+          echo ${{ secrets.CERTIFICATE_WINDOWS_PFX }} > ".\windows.pfx"; `
+          cat ".\windows.pfx"; `
+          certutil -f -p "${{ secrets.WINDOWS_PFX_PASSWORD }}" -importpfx ".\windows.pfx"; `
+          & "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x86\signtool.exe" `
+          sign /sm /debug /v /sha1 "${{ secrets.WINDOWS_PFX_SHA1 }}" /t "http://tsa.starfieldtech.com" .\dist\render.exe
+
+      - name: Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os }}
+          path: dist
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Changes
+        uses: actions/download-artifact@v2
+        with:
+          name: changes
+
+      - name: Get deployment refs
+        id: get_source
+        run: |
+          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
+          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          # body: ${{ steps.changes.outputs.log }}
+          body_path: changes.txt
+          # body: ${{ needs.build.outputs.log }}
+          # echo ::set-env name=FOO::$(echo -n "hello world")
+          draft: false
+          prerelease: false
+
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      source_tag: ${{ steps.get_source.outputs.SOURCE_TAG }}
+
+
+  upload:
+    needs: release
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+      max-parallel: 3
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: ${{ matrix.os }}
+
+      - name: chmod
+        if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
+        run: chmod +x render
+
+      - name: Upload Linux Asset
+        if: startsWith(matrix.os, 'ubuntu')
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: render
+          asset_name: render-linux
+          asset_content_type: application/x-executable
+
+      - name: Upload Mac Asset
+        if: startsWith(matrix.os, 'macos')
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: render
+          asset_name: render-mac
+          asset_content_type: application/x-executable
+
+      - name: Upload Windows Asset
+        if: startsWith(matrix.os, 'windows')
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: render.exe
+          asset_name: render-windows
+          asset_content_type: application/x-executable

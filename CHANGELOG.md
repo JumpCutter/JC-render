@@ -1,12 +1,13 @@
 # Change Log
 
-## [0.0.1](https://github.com/JumpCutter/JC-render/compare/v0.0.0...v0.8.1) (02-13-2021)
+## [0.0.1](https://github.com/JumpCutter/JC-render/compare/v0.0.0...v0.0.1) (02-13-2021)
 
 ### Changes
 - __open source__: This is the real deal now
     - __updated readme__: README makes some sense now
     - __CHANGELOG__: added for devs
 - __ci yaml__: multiple updates to make the ci production ready
+- __example__: Added the examples submodule
 
 ### Performance Improvements
 - __dry__: the chunking is dry now

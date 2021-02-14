@@ -6,7 +6,7 @@ ifdef::env-github,safe-mode-secure[]
 :toc:
 :toc-placement!:
 endif::[]
-The shared jumpcutter renderer.
+The shared JumpCutter renderer.
 
 ifdef::env-github,safe-mode-secure[]
 toc::[]
@@ -25,6 +25,7 @@ git submodule init
 git submodule update
 ----
 
+Or with the `--recurse-submodule` flag when you clone.
 
 Our submodules hold a shared folder of test files.
 
@@ -45,7 +46,7 @@ See the <<running_the_readme>> or <<suggested_reads>>
 python render.py <cuts.json>
 ----
 
-I suggest <<my_setup>> to run this with pytest.
+I suggest <<quick_start, this setup>> to run this with pytest.
 
 == Contributing
 NOTE: visible tests displaying your changes lead to faster pull requests.
@@ -54,6 +55,61 @@ Please install `pytest` and continue to test your changes with pytest.
 
 
 NOTE: Our renderer currently uses an input JSON file.footnote:["We hope to introduce a websocket input method \n see <<open_interaction>>"]
+
+
+
+=== Formatting
+.Probably the biggest requirement for pull requests
+
+For quick setup see <<quick_start>>. (This is all a part of the vim setup)
+
+For linting you should follow:
+- autopep8
+- flake8
+- pylint
+
+
+=== Testing
+.We will try and rely on pytest for pr testing
+
+WARNING: Always use the ffmpeg mark! +
+This is necessary because our ci deployment skips all tests that require ffmpeg.
+
+Pytest is rather simple and explained just below.
+
+See <<the_jumpcutter_format>> to replicate our JSON input.
+
+=== Quick Start
+.virutalenv and pytest is best
+
+
+[source, sh]
+----
+python3 -m pip install virtualenv
+virtualenv -p python3.8 venv
+source venv/bin/activate
+pip install -r requirements.txt
+pip install autopep8 pytest flake8 pylint rope
+----
+
+
+=== My Setup
+Bc I love our devs here's the best way to test your changes
+
+Install https://github.com/python-mode/python-mode[python-mode] for vim with coc-python.
+Together these will utilize, `autopep8`, `flake8`, `pyline`, and `rope`.
+
+Then use this
+
+Terminal 1::
+`vim render.py`:::
+duh
+Terminal 2::
+`nodemon -e "py,json" -x "pytest -s -m render"`:::
+this will run your render repeatedly
+Terminal 3::
+`less +F logs/render.log`:::
+This way you see the full log and do not rely on the stdout
 
 
 === Write to the CHANGELOG
@@ -80,7 +136,7 @@ Changes::
 you added some new code
 
 UI Improvements::
-you changed the layout, style, appearance, or functionaily
+you changed the layout, style, appearance, or functionally
 
 Performance Improvements::
 you just changed the functionality of something so it runs smoother
@@ -105,56 +161,115 @@ use this with the `@depricated` JSDoc tag
 Pydoc doesn't have this but I hear https://deprecation.readthedocs.io/en/latest/[deprecation] is good?
 
 
-=== Formatting
-asdfasdf
-
-// TODO: asdfasdf
-
-=== Testing
-
-
-=== My Setup
-.virutalenv and pytest is best
-
-
-[source, sh]
-----
-python3 -m pip install virtualenv
-virtualenv -p python3.8 venv
-source venv/bin/activate
-pip install -r requirements.txt
-pip install autopep8 pytest flake8 pylint rope
-----
-
-
-=== Advanced Setup
-Bc I love our devs here's the best way to test your changes
-
-Terminal 1::
-`vim render.py`:::
-duh
-Terminal 2::
-`nodemon -e "py,json" -x "pytest -s -m render"`:::
-this will run your render repeatedly
-Terminal 3::
-`less +F render.log`:::
-This way you see the full log and do not rely on the stdout
-
-=== Known Issues
-
-The renderer fails if an audio or video only track is input.
-It relies on a video that includes an audio stream and does not allow audio only.
-
-
-
 == Building
+.This is the best part!
 
-// TODO: here
+ifdef::backend-html5[]
+To run the build on any system you can simply execute link:../local_run.sh[local_run]
+endif::[]
+ifndef::backend-html5[]
+To run the build on any system you can simply execute link:local_run.sh[local_run]
+endif::[]
+// TODO: way to lazy to remember the variable syntax
+
+NOTE: We use pyinstaller==4.0 becuase of major a security battle between Windows and python.
+
+This will essentially run `pyinstaller render.spec`.
+
+This is the final binary we use. Please be sure to test that this builds.
+
+WARNING: Changing the requirements.txt or this spec file can lead to unnecessary stress.
+
+
+=== Testing the Build
+.You can run this live!
+
+Steps::
+- You need to open JumpCutter **FIRST**
+    - this unpacks its current render into it's bin fodder
+- `local_run.sh`
+- copy the render script over
+- make sure to make this executable
+    - this is `chmod` except on windows where you rename it `render.exe`
+
+=== The JumpCutter Format
+
+Since this is proprietary, here is a simple example of our json.
+
+[source,json]
+----
+{
+    "frameRate": 30,
+    "outFile": "layered.mp4",
+    "resolution": null,
+    "layers": [
+        [
+            {
+                "timelineStart": 35000,
+                "sourceFile": "uploadTest2.mp4",
+                "opType": "jumpcutter",
+                "speed": {
+                    "sounded": 0.9,
+                    "silent": null
+                },
+                "cuts": [
+                    {
+                        "start": 0.333,
+                        "end": 1.6
+                    },
+                    {
+                        "start": 3.4,
+                        "end": 4.7
+                    },
+                    {
+                        "start": 6.467,
+                        "end": 7.667
+                    },
+                    {
+                        "start": 10.433,
+                        "end": 11.7
+                    },
+                    {
+                        "start": 13.9,
+                        "end": 14.233
+                    },
+                    {
+                        "start": 14.233,
+                        "end": 14.233
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "timelineStart": 0,
+                "sourceFile": "background.mp4",
+                "opType": "asdf"
+            }
+        ]
+    ]
+}
+----
+
+
+== Known Bugs
+.Maybe we can delete this section
+
+**For my OpenSource people: we can eventually move this to Issues**
+
+=== Mac Failure
+This is a rather recent issue... idk.
+
+=== FFmpeg
+Our packaged binary does not support the nvidia encoder on linux.
+It seemingly just isn't included.
 
 == Grievances
 A section to list the major TODOs
 
 **For my OpenSource bros pls see <<accessability>>**
+
+<<pass_through>> is another super useful section.
 
 === Accessability
 .Our current renderer runs in a quasi CLI with our own JSON format.
@@ -163,28 +278,64 @@ Input Parameters Should Come From The Socket::
 Since our local app supports sockets,
 we should expand on this interaction to include input data from the socket.
 
-=== Classes
-.Essentially I was lazy so it's all chonked into a huge file that isn't DRY at all
-The render is currently a single class with classwide variable that are relative to the last run of ffprobe.
-
-An example solution would be a Video class that inputall all the ffprobe actions.
-
-
-=== Layering
-// TODO: we should use this
-
 === Examples Submodule
-We need a broader example repo for the public.
+.While we _can_ make our inputs more open in nature...
+
+We need our examples repo to include what we need to easily reproduce tests.
 
 PLEASE Contact me to get an output json::
 This is a temporary measure to fill up JC-examples for everyone else +
 +
 NOTE: this is not necessary, considering you can grab this json from your tmp files
 
+=== Classes
+.Essentially I was lazy so it's all chonked into a huge file that isn't DRY at all
+The render is currently a single class with class-wide variable that are relative to the last run of ffprobe.
+
+An example solution would be a Video class that inputall all the ffprobe actions.
+
+
+=== Layering
+.You might have noticed the input array is two dimensional.
+
+Feel free to build out the layering.
+It hasn't been tested since laying was removed from the JumpCutter app.
+
+
+=== Pass Through
+.This is the biggest potential performance improvement.
+
+You might notice this:
+
+[source,py]
+----
+if self.bit_rate is not None:
+    kwargs['b'] = self.bit_rate
+    kwargs['maxrate'] = self.bit_rate
+    kwargs['bufsize'] = 2 * self.bit_rate
+kwargs['profile'] = 'high'
+kwargs['preset'] = 'slow'
+----
+.This is to fix a mac issue.
+
+On Mac, mov files would lose their quality and introduce artifacts,
+now we set the `preset` and `profile`.
+
+With mp4 (to begin with) ffmpeg should be able to pass through the codec
+and apply cuts without rencoding.
+__There is a significant speed increase to be gained here__,
+this is just difficult with obscure video wrappers and less common encoders.
+
+=== Video Toolbox
+.The tool to make mac faster makes it slower.
+
+This introduces artifacting with no increase in speed. Please help.
+
+
 == Running the README
 If you're like me you want a simple readable readme with the features of ADOC.
 
-For this you need to get ruby installed - I suggest RVM for that.
+For this you need to get ruby installed - I suggest https://rvm.io/[RVM] for that.
 
 Assuming you have ruby run:
 [source, sh]

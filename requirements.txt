@@ -1,0 +1,12 @@
+ffmpeg-python==0.2.0
+pyinstaller==4.0
+tinyaes==1.0.1
+OpenTimelineIO==0.13.0
+pyaaf2==1.4.0
+
+
+# autopep8
+# pytest
+# flake8
+# pylint
+# rope
