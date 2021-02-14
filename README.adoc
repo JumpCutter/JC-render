@@ -1,0 +1,201 @@
+= Renderer
+:experimental:
+:description: The render script
+:toc: left
+ifdef::env-github,safe-mode-secure[]
+:toc:
+:toc-placement!:
+endif::[]
+The shared jumpcutter renderer.
+
+ifdef::env-github,safe-mode-secure[]
+toc::[]
+endif::[]
+
+== Setup
+NOTE: python3.8
+
+CAUTION: You need a local build of ffmpeg>=4.3.footnote:[ffmpeg 4.3 is not a current/stable release]
+
+Be sure to grab the submodules for this project.
+
+[source, sh]
+----
+git submodule init
+git submodule update
+----
+
+
+Our submodules hold a shared folder of test files.
+
+[source, sh]
+----
+pip install -r requirements.txt
+----
+
+Want a better README?::
+See the <<running_the_readme>> or <<suggested_reads>>
+
+== Running render
+.our render is cli based
+
+.Just as the binary would run:
+[source, sh]
+----
+python render.py <cuts.json>
+----
+
+I suggest <<my_setup>> to run this with pytest.
+
+== Contributing
+NOTE: visible tests displaying your changes lead to faster pull requests.
+
+Please install `pytest` and continue to test your changes with pytest.
+
+
+NOTE: Our renderer currently uses an input JSON file.footnote:["We hope to introduce a websocket input method \n see <<open_interaction>>"]
+
+
+=== Write to the CHANGELOG
+You don't need to go in depth,
+CHANGELOG is mostly so we can stay ahead of changes and
+squash bugs that arise with updates.
+
+This is also necessary if you want your version to go live.
+
+==== Change Log Formatting
+You understand basic markdown, but something things to remember:
+
+- New versions go at the top of the file
+- Considering not every commit is a new version, add you changes to the bottom of the current version header
+- When talking about a file feel free to include a link to it
+
+In case you were wondering, I've pretty much ripped off angular's https://github.com/angular/angular/blob/master/CHANGELOG.md[format] for changelogs.
+
+==== Change Log Headers
+This is not exclusive, but if you use another header, you should add it here so we can continue to use it.
+
+
+Changes::
+you added some new code
+
+UI Improvements::
+you changed the layout, style, appearance, or functionaily
+
+Performance Improvements::
+you just changed the functionality of something so it runs smoother
+
+General Improvements::
+I usually put changes that only effect the local build here
+- changes to the start script or similar
+- but if you really can't think of a good header, this is the _general_
+
+Bug Fixes::
+you fixed some broken code
+
+BREAKING CHANGES::
+explain what of the change will break something else
+- This _should_ be the last header
+- generally this should detail a change you've mentioned
+- Make it even easier by using the same bullet as a the change
+
+DEPRECATIONS::
+use this with the `@depricated` JSDoc tag
++
+Pydoc doesn't have this but I hear https://deprecation.readthedocs.io/en/latest/[deprecation] is good?
+
+
+=== Formatting
+asdfasdf
+
+// TODO: asdfasdf
+
+=== Testing
+
+
+=== My Setup
+.virutalenv and pytest is best
+
+
+[source, sh]
+----
+python3 -m pip install virtualenv
+virtualenv -p python3.8 venv
+source venv/bin/activate
+pip install -r requirements.txt
+pip install autopep8 pytest flake8 pylint rope
+----
+
+
+=== Advanced Setup
+Bc I love our devs here's the best way to test your changes
+
+Terminal 1::
+`vim render.py`:::
+duh
+Terminal 2::
+`nodemon -e "py,json" -x "pytest -s -m render"`:::
+this will run your render repeatedly
+Terminal 3::
+`less +F render.log`:::
+This way you see the full log and do not rely on the stdout
+
+=== Known Issues
+
+The renderer fails if an audio or video only track is input.
+It relies on a video that includes an audio stream and does not allow audio only.
+
+
+
+== Building
+
+// TODO: here
+
+== Grievances
+A section to list the major TODOs
+
+**For my OpenSource bros pls see <<accessability>>**
+
+=== Accessability
+.Our current renderer runs in a quasi CLI with our own JSON format.
+
+Input Parameters Should Come From The Socket::
+Since our local app supports sockets,
+we should expand on this interaction to include input data from the socket.
+
+=== Classes
+.Essentially I was lazy so it's all chonked into a huge file that isn't DRY at all
+The render is currently a single class with classwide variable that are relative to the last run of ffprobe.
+
+An example solution would be a Video class that inputall all the ffprobe actions.
+
+
+=== Layering
+// TODO: we should use this
+
+=== Examples Submodule
+We need a broader example repo for the public.
+
+PLEASE Contact me to get an output json::
+This is a temporary measure to fill up JC-examples for everyone else +
++
+NOTE: this is not necessary, considering you can grab this json from your tmp files
+
+== Running the README
+If you're like me you want a simple readable readme with the features of ADOC.
+
+For this you need to get ruby installed - I suggest RVM for that.
+
+Assuming you have ruby run:
+[source, sh]
+----
+bundle install
+guard start
+----
+
+== Suggested Reads
+Blah blah asciidoc is the bestest blah blah
+
+++++
+<script src="http://localhost:35729/livereload.js"></script>
+++++
