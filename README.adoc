@@ -2,6 +2,7 @@
 :experimental:
 :description: The render script
 :toc: left
+:idseparator: -
 ifdef::env-github,safe-mode-secure[]
 :toc:
 :toc-placement!:
@@ -35,7 +36,7 @@ pip install -r requirements.txt
 ----
 
 Want a better README?::
-See the <<running_the_readme>> or <<suggested_reads>>
+See the <<running-the-readme>> or <<suggested-reads>>
 
 == Running render
 .our render is cli based
@@ -46,9 +47,9 @@ See the <<running_the_readme>> or <<suggested_reads>>
 python render.py <cuts.json>
 ----
 
-I suggest <<quick_start, this setup>> to run this with pytest.
+I suggest <<quick-start, this setup>> to run this with pytest.
 
-Our renderer currently needs an input JSON file.footnote:["We hope to introduce a websocket input method \n see <<open_interaction>>"]
+Our renderer currently needs an input JSON file.footnote:["We hope to introduce a websocket input method \n see <<open-interaction>>"]
 
 == Contributing
 NOTE: visible tests displaying your changes lead to faster pull requests.
@@ -58,7 +59,7 @@ Please install `pytest` and continue to test your changes with pytest.
 === Formatting
 .Probably the biggest requirement for pull requests
 
-For quick setup see <<quick_start>>. (This is all a part of the vim setup)
+For quick setup see <<quick-start>>. (This is all a part of the vim setup)
 
 For linting you should follow:
 - autopep8
@@ -76,7 +77,7 @@ This is necessary because our ci deployment skips all tests that require ffmpeg.
 
 We have included a test video and JSON file in the submodule.
 
-See <<the_jumpcutter_format>> to replicate our JSON input.
+See <<the-jumpcutter-format>> to replicate our JSON input.
 
 === Quick Start
 .virutalenv and pytest is best
@@ -268,7 +269,7 @@ A section to list the major TODOs
 
 **For the OpenSource community see <<accessibility>>**
 
-<<pass_through>> is another super useful section.
+<<pass-through>> is another super useful section.
 
 === Accessibility
 .Our current renderer runs in a quasi CLI with our own JSON format.
@@ -278,7 +279,7 @@ Since our local app supports sockets,
 we should expand on this interaction to include input data from the socket.
 
 === Examples Submodule
-.While we _can_ make our inputs more open in nature...
+.While we -can- make our inputs more open in nature...
 
 We need our examples repo to include what we need to easily reproduce tests.
 
