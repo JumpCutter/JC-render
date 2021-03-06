@@ -48,15 +48,12 @@ python render.py <cuts.json>
 
 I suggest <<quick_start, this setup>> to run this with pytest.
 
+Our renderer currently needs an input JSON file.footnote:["We hope to introduce a websocket input method \n see <<open_interaction>>"]
+
 == Contributing
 NOTE: visible tests displaying your changes lead to faster pull requests.
 
 Please install `pytest` and continue to test your changes with pytest.
-
-
-NOTE: Our renderer currently uses an input JSON file.footnote:["We hope to introduce a websocket input method \n see <<open_interaction>>"]
-
-
 
 === Formatting
 .Probably the biggest requirement for pull requests
@@ -70,12 +67,14 @@ For linting you should follow:
 
 
 === Testing
-.We will try and rely on pytest for pr testing
+.Standard pytest.
+
+We hope to rely on pytest for pr testing.
 
 WARNING: Always use the ffmpeg mark! +
 This is necessary because our ci deployment skips all tests that require ffmpeg.
 
-Pytest is rather simple and explained just below.
+We have included a test video and JSON file in the submodule.
 
 See <<the_jumpcutter_format>> to replicate our JSON input.
 
@@ -94,22 +93,22 @@ pip install autopep8 pytest flake8 pylint rope
 
 
 === My Setup
-Bc I love our devs here's the best way to test your changes
+Because I love our devs, here's the best way to test your changes
 
 Install https://github.com/python-mode/python-mode[python-mode] for vim with coc-python.
-Together these will utilize, `autopep8`, `flake8`, `pyline`, and `rope`.
+Together these will, `autopep8`, `flake8`, `pyline`, and `rope`.
 
-Then use this
+You can then split your terminals:
 
 Terminal 1::
 `vim render.py`:::
-duh
+For editing.
 Terminal 2::
 `nodemon -e "py,json" -x "pytest -s -m render"`:::
-this will run your render repeatedly
+For testing.
 Terminal 3::
 `less +F logs/render.log`:::
-This way you see the full log and do not rely on the stdout
+For reading the log live.
 
 
 === Write to the CHANGELOG
@@ -120,43 +119,43 @@ squash bugs that arise with updates.
 This is also necessary if you want your version to go live.
 
 ==== Change Log Formatting
-You understand basic markdown, but something things to remember:
+You understand basic markdown, but some things to remember::
 
 - New versions go at the top of the file
-- Considering not every commit is a new version, add you changes to the bottom of the current version header
+- Considering not every commit is a new version, add your changes to the bottom of the current version header
 - When talking about a file feel free to include a link to it
 
-In case you were wondering, I've pretty much ripped off angular's https://github.com/angular/angular/blob/master/CHANGELOG.md[format] for changelogs.
+In case you were wondering, I've pretty much ripped off Angular's https://github.com/angular/angular/blob/master/CHANGELOG.md[format] for CHANGELOG.
 
 ==== Change Log Headers
 This is not exclusive, but if you use another header, you should add it here so we can continue to use it.
 
 
 Changes::
-you added some new code
+You added some new code.
 
 UI Improvements::
-you changed the layout, style, appearance, or functionally
+You changed the layout, style, appearance, or functionally.
 
 Performance Improvements::
-you just changed the functionality of something so it runs smoother
+You just changed the functionality of something so it runs smoother.
 
 General Improvements::
-I usually put changes that only effect the local build here
-- changes to the start script or similar
-- but if you really can't think of a good header, this is the _general_
+You can't think of a better place to put your changes.
+- Some changes that only effect the local build.
+- Changes to the start script or similar.
 
 Bug Fixes::
-you fixed some broken code
+You fixed some broken code.
 
 BREAKING CHANGES::
-explain what of the change will break something else
+Your change will break something else.
 - This _should_ be the last header
-- generally this should detail a change you've mentioned
-- Make it even easier by using the same bullet as a the change
+- Generally this should detail a change you've mentioned under another header.
+- Make it easier by using the same bullet as the change.
 
 DEPRECATIONS::
-use this with the `@depricated` JSDoc tag
+Use this with the `@depricated` JSDoc tag
 +
 Pydoc doesn't have this but I hear https://deprecation.readthedocs.io/en/latest/[deprecation] is good?
 
@@ -258,7 +257,7 @@ Since this is proprietary, here is a simple example of our json.
 **For my OpenSource people: we can eventually move this to Issues**
 
 === Mac Failure
-This is a rather recent issue... idk.
+This is a rather recent issue...
 
 === FFmpeg
 Our packaged binary does not support the nvidia encoder on linux.
@@ -267,11 +266,11 @@ It seemingly just isn't included.
 == Grievances
 A section to list the major TODOs
 
-**For my OpenSource bros pls see <<accessability>>**
+**For the OpenSource community see <<accessibility>>**
 
 <<pass_through>> is another super useful section.
 
-=== Accessability
+=== Accessibility
 .Our current renderer runs in a quasi CLI with our own JSON format.
 
 Input Parameters Should Come From The Socket::
@@ -289,7 +288,7 @@ This is a temporary measure to fill up JC-examples for everyone else +
 NOTE: this is not necessary, considering you can grab this json from your tmp files
 
 === Classes
-.Essentially I was lazy so it's all chonked into a huge file that isn't DRY at all
+.It's all chonked into a huge file that isn't DRY at all.
 The render is currently a single class with class-wide variable that are relative to the last run of ffprobe.
 
 An example solution would be a Video class that inputall all the ffprobe actions.
@@ -318,7 +317,7 @@ kwargs['preset'] = 'slow'
 ----
 .This is to fix a mac issue.
 
-On Mac, mov files would lose their quality and introduce artifacts,
+On Mac, mov files would lose their quality and introduce artifacts;
 now we set the `preset` and `profile`.
 
 With mp4 (to begin with) ffmpeg should be able to pass through the codec
@@ -333,11 +332,11 @@ This introduces artifacting with no increase in speed. Please help.
 
 
 == Running the README
-If you're like me you want a simple readable readme with the features of ADOC.
+.A simple way to run with the features of asciidoc.
 
 For this you need to get ruby installed - I suggest https://rvm.io/[RVM] for that.
 
-Assuming you have ruby run:
+Assuming you have ruby, run:
 [source, sh]
 ----
 bundle install
@@ -345,7 +344,7 @@ guard start
 ----
 
 == Suggested Reads
-Blah blah asciidoc is the bestest blah blah
+This section is a placeholder.
 
 ++++
 <script src="http://localhost:35729/livereload.js"></script>
