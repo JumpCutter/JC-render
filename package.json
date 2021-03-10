@@ -1,0 +1,27 @@
+{
+  "name": "jc-render",
+  "version": "0.0.2-canary.0",
+  "description": "= Renderer :experimental: :description: The render script :toc: left :idseparator: - ifdef::env-github,safe-mode-secure[] :toc: :toc-placement!: endif::[] The shared JumpCutter renderer.",
+  "main": "index.js",
+  "directories": {
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JumpCutter/JC-render.git"
+  },
+  "author": "dreiParrent<drei@aparrent.com>",
+  "bugs": {
+    "url": "https://github.com/JumpCutter/JC-render/issues"
+  },
+  "homepage": "https://github.com/JumpCutter/JC-render#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "husky": "^5.1.3"
+  }
+}
