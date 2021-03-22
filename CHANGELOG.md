@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.0.2](https://github.com/JumpCutter/JC-render/compare/v0.0.1...v0.0.2) (03-22-2021)
+
+### Bug Fixes
+- __binaries__: added the necessary binaries for mac and linux to [render.spec](./render.spec)
+- __package__: added a package and husky for future use.
+
+
 ## [0.0.1](https://github.com/JumpCutter/JC-render/compare/v0.0.0...v0.0.1) (02-13-2021)
 
 ### Changes
@@ -27,8 +34,3 @@
 
 ### DEPRECATIONS
 - **none**: just here so devs see my formatting:)
-
-
-## [0.0.0] This is a placeholder double hash so the workflow sed can read this file
-
-(open sourced)

@@ -6,21 +6,26 @@ PACKAGE_DLL=os.getenv('PACKAGE_DLL', 'false') == 'true'
 block_cipher = pyi_crypto.PyiBlockCipher(key='amMtcmVuZGVyZXI=')
 
 binaries = []
+shared = [
+   ('binaries/opentimelineio', '.'),
+   ('binaries/opentimelineio_contrib', '.'),
+   ('binaries/redis', '.'),
+]
 
 if PACKAGE_DLL:
    binaries = [
-      ('binaries/opentimelineio', '.'),
-      ('binaries/opentimelineio_contrib', '.'),
       ('binaries/opentime.dll', '.'),
       ('binaries/opentimelineio.dll', '.'),
-      ('binaries/redis', '.'),
+      *shared
    ]
+   shared = []
 
 a = Analysis(['render.py'],
              pathex=['/home/drei/repos/JC-renderer'],
              binaries=binaries,
              datas=[
                ('version.txt', '.'),
+               *shared
             ],
              hiddenimports=[
                 'fractions',

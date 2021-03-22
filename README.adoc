@@ -113,6 +113,10 @@ For reading the log live.
 
 
 === Write to the CHANGELOG
+.asdf
+
+link:./CHANGELOG.md[CHANGELOG]
+
 You don't need to go in depth,
 CHANGELOG is mostly so we can stay ahead of changes and
 squash bugs that arise with updates.
