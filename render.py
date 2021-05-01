@@ -105,6 +105,8 @@ class Render:
     """the current logging socket"""
     thread_alloc = 0
     """the number of treads to allocate where 0=all"""
+    pixel_aspect_ratio = 1.0
+    """the calculated pixel aspect ratio"""
 
     def __init__(self,  # NOQA
                  json_file: str,
@@ -278,6 +280,15 @@ class Render:
                                          select_streams=stream)
             if stream == 'v':
                 self._handle_video_detection(probe_streams)
+                display_aspect_ratio = probe_all['streams'][0].get('display_aspect_ratio')
+                sample_aspect_ratio = probe_all['streams'][0].get('sample_aspect_ratio')
+                if display_aspect_ratio and sample_aspect_ratio:
+                    dar = display_aspect_ratio.split(":")
+                    sar = sample_aspect_ratio.split(":")
+                    res = self.resolution.split("x")
+                    x_pixel_ratio = float(res[1]) * float(dar[0]) / float(sar[0])
+                    y_pixel_ratio = float(res[0]) * float(dar[1]) / float(sar[1])
+                    self.pixel_aspect_ratio = x_pixel_ratio / y_pixel_ratio
             if probe_streams['streams']:
                 hasit = True
         except Exception as e:
@@ -1051,6 +1062,8 @@ class Render:
                         xml_height.text = height
                         xml_width = ET.Element("width")
                         xml_width.text = width
+                        xml_pixel_aspect_ratio = ET.Element("pixelaspectratio")
+                        xml_pixel_aspect_ratio.text = str(self.pixel_aspect_ratio)
                         xml_chars = ET.Element(
                             "samplecharacteristics",
                         )
@@ -1059,6 +1072,9 @@ class Render:
                         )
                         xml_chars.append(
                             xml_width
+                        )
+                        xml_chars.append(
+                            xml_pixel_aspect_ratio
                         )
                         #              )
                         xml_format = ET.Element(
