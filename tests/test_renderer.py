@@ -5,11 +5,12 @@ from render import Render, ffprobe
 # import threading
 import json
 
+JSON_EXAMPLE = 'JC-examples/yoga.json'
 
 @pytest.mark.render
 @pytest.mark.ffmpeg
 def test_render():
-    r = Render('output.json', './tmp',
+    r = Render(JSON_EXAMPLE, './tmp',
                no_clean=True,
                silent_log=True,
                thread_alloc=2,
@@ -28,7 +29,7 @@ def test_render():
 @pytest.mark.ffmpeg
 @pytest.mark.xml
 def test_export_xml():
-    r = Render('output.json', './tmp',
+    r = Render(JSON_EXAMPLE, './tmp',
                no_clean=True,
                # markers=True,
                # readable=True,
@@ -40,7 +41,7 @@ def test_export_xml():
 @pytest.mark.ffmpeg
 @pytest.mark.fcpxml
 def test_export_fcpxml():
-    r = Render('output.json', './tmp',
+    r = Render(JSON_EXAMPLE, './tmp',
                no_clean=True,
                # markers=True,
                # readable=True,
@@ -52,7 +53,7 @@ def test_export_fcpxml():
 @pytest.mark.ffmpeg
 @pytest.mark.edl
 def test_export_edl():
-    r = Render('output.json', './tmp',
+    r = Render(JSON_EXAMPLE, './tmp',
                no_clean=True,
                # readable=True,
                verbose=False, vcodec='edl')
@@ -63,7 +64,7 @@ def test_export_edl():
 @pytest.mark.ffmpeg
 @pytest.mark.otio
 def test_export_otio():
-    r = Render('output.json', './tmp',
+    r = Render(JSON_EXAMPLE, './tmp',
                no_clean=True,
                # readable=True,
                verbose=False, vcodec='otio')
@@ -74,7 +75,7 @@ def test_export_otio():
 @pytest.mark.ffmpeg
 @pytest.mark.aaf
 def test_export_aaf():
-    r = Render('output.json', './tmp',
+    r = Render(JSON_EXAMPLE, './tmp',
                no_clean=True,
                # readable=True,
                verbose=False, vcodec='aaf')
@@ -84,7 +85,7 @@ def test_export_aaf():
 @pytest.mark.probe
 @pytest.mark.ffmpeg
 def test_probe():
-    r = Render('output.json', './tmp', True, vcodec='h264')
+    r = Render(JSON_EXAMPLE, './tmp', True, vcodec='h264')
     input_data = r.get_json(r.json_file)
     probe_res = ffprobe(input_data['layers'][0][0]['sourceFile'])
     print(json.dumps(probe_res, indent=2))
@@ -93,7 +94,7 @@ def test_probe():
 @pytest.mark.probe_audio
 @pytest.mark.ffmpeg
 def test_audio():
-    r = Render('output.json', './tmp', True, vcodec='h264')
+    r = Render(JSON_EXAMPLE, './tmp', True, vcodec='h264')
     input_data = r.get_json(r.json_file)
     layer = input_data['layers'][0][0]['sourceFile']
     probe_res = ffprobe(layer, select_streams='a')
