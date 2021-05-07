@@ -256,10 +256,10 @@ class Render:
         try:
             try:
                 probe_all = ffmpeg.probe('{}'.format(file_name), cmd=self.ffprobe_path)
-            except Exception:
+            except Exception as e:
                 self.logger.warning("WHAT IS THIS")  # FIXME: @JUL14N this one's for you buddy:)
                 stderr = e.stderr.decode('ascii').replace('\n', '\n\t')
-                self._logger.warning(f"ffprobe stderr:\n\t{stderr}")
+                self.logger.warning(f"ffprobe stderr:\n\t{stderr}")
             if stream == 'v':
                 self.logger.debug("probe result -\n" + json.dumps(probe_all, indent=2))
             else:  # TODO: this is here to prove that we unnecessarily call has_stream twice
