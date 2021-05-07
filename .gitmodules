@@ -1,0 +1,3 @@
+[submodule "JC-examples"]
+	path = JC-examples
+	url = git@github.com:JumpCutter/JC-examples.git

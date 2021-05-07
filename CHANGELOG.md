@@ -1,8 +1,9 @@
 # Change Log
 
-## [0.0.3](https://github.com/JumpCutter/JC-render/compare/v0.0.1...v0.0.3) (04-01-2021)
+## [0.0.3](https://github.com/JumpCutter/JC-render/compare/v0.0.2...v0.0.3) (04-01-2021)
+
 ### Bug Fixes
-- __PIXEL ASPECT RATIO__: added pal for xml
+- __Pixel Aspect Ratio__: added pixel aspect ratio for xml
 
 
 ## [0.0.2](https://github.com/JumpCutter/JC-render/compare/v0.0.1...v0.0.2) (03-22-2021)
