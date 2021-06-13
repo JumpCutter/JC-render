@@ -19,16 +19,32 @@ def getRealRange(trimmed_range):
 
 def transform_clips(clips):
     out_clips = list()
-    for i, clip in enumerate(clips):
-        out_clips.append(list())
-        out_clips[-1].append(i+1) # ID
+    i = 1
+    for clip in clips:
         begin, length = getRealRange(clip.trimmed_range())
+        if i != 1: # filling in the gaps
+            out_clips.append(list())
+            out_clips[-1].append(i) # ID
+            i+=1
+            between_begin = float(out_clips[-2][1]) + float(out_clips[-2][2])
+            between_length = float(getMillis(begin)) - between_begin
+            out_clips[-1].append(
+                    decimal.Decimal(between_begin).quantize(decimal.Decimal('0.0001'))
+                    )
+            out_clips[-1].append(
+                    decimal.Decimal(between_length).quantize(decimal.Decimal('0.0001'))
+                    )
+
+        out_clips.append(list())
+        out_clips[-1].append(i) # ID
+        i+=1
         out_clips[-1].append(
                 getMillis(begin)
                 )
         out_clips[-1].append(
                 getMillis(length)
                 )
+
     return out_clips
 
 
