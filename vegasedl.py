@@ -21,7 +21,7 @@ def transform_clips(clips):
     out_clips = list()
     for i, clip in enumerate(clips):
         out_clips.append(list())
-        out_clips[-1].append(i) # ID
+        out_clips[-1].append(i+1) # ID
         begin, length = getRealRange(clip.trimmed_range())
         out_clips[-1].append(
                 getMillis(begin)
@@ -48,29 +48,29 @@ def edl(outfile, clips, videoFileName):
             '"FadeTimeOut"; "SustainGain"; "CurveIn";      "GainIn";'
             '"CurveOut";    "GainOut";     "Layer";        "Color";'
             '"CurveInR";    "CurveOutR";   "PlayPitch";    "LockPitch"\n')
-    for clip in clips :
-        for i, mtype in enumerate(["VIDEO", "AUDIO"]):
+    for i, mtype in enumerate(["AUDIO", "VIDEO"]):
+        for j, clip in enumerate(clips) :
             # Here are some default values. I Wish I knew what most of this does
             f.write(
-                #| ID            |       Track |    StartTime | Length           |
-                f'{clip[0]*(i+1)};            1;     {clip[1]};         {clip[2]};' +
+                #| ID             |       Track |    StartTime | Length           |
+                f'{clip[0]+(i *j)};          {i};     {clip[1]};         {clip[2]};' +
 
-                #| PlayRate      |      Locked |   Normalized | StretchMethod    |
-                f'       1.000000;        FALSE;         FALSE;                 0;' +
+                #| PlayRate       |      Locked |   Normalized | StretchMethod    |
+                f'        1.000000;        FALSE;         FALSE;                 0;' +
 
-                #| Looped        |     OnRuler |    MediaType | FileName         |
-                f'           TRUE;        FALSE;       {mtype}; "{videoFileName}";' +
+                #| Looped         |     OnRuler |    MediaType | FileName         |
+                f'            TRUE;        FALSE;       {mtype}; "{videoFileName}";' +
 
-                #| Stream        | StreamStart | StreamLength | FadeTimeIn       |
-                f'              0;    {clip[1]};     {clip[2]};            0.0000;' +
+                #| Stream         | StreamStart | StreamLength | FadeTimeIn       |
+                f'               0;    {clip[1]};     {clip[2]};            0.0000;' +
 
-                #| FadeTimeOut   | SustainGain |      CurveIn | GainIn           |
-                f'         0.0000;     1.000000;             4;          0.000000;' +
+                #| FadeTimeOut    | SustainGain |      CurveIn | GainIn           |
+                f'          0.0000;     1.000000;             4;          0.000000;' +
 
-                #| CurveOut      |     GainOut |        Layer | Color            |
-                f'              4;     0.000000;             0;                -1;' +
+                #| CurveOut       |     GainOut |        Layer | Color            |
+                f'               4;     0.000000;             0;                -1;' +
 
-                #| CurveInR      |   CurveOutR |    PlayPitch | LockPitch        |
-                f'              4;            4;      0.000000;            FALSE\n'
+                #| CurveInR       |   CurveiiOutR |    PlayPitch | LockPitch        |
+                f'               4;            4;      0.000000;            FALSE\n'
                 )
     f.close()
