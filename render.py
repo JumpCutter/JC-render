@@ -8,6 +8,7 @@ import subprocess
 import argparse
 import opentimelineio as otio
 import signal
+import vegasedl
 from opentimelineio.schema import (
     Timeline,
     Track,
@@ -1048,6 +1049,17 @@ class Render:
                         timeline,
                         "{}{}.edl".format(name, int(i / 2))
                     )
+            elif self.vcodec == "vegasedl":
+                for i in range(0, len(tracks) - 1, 2):
+                    timeline = Timeline(
+                        f"{timeline_name}{int(i/2)}.txt",
+                        [tracks[i], tracks[i + 1]],
+                        RationalTime(0, self.frame_rate)
+                    )
+                    vegasedl.write_to_file(
+                            timeline,
+                            f"{name}{int(i / 2)}.txt"
+                            )
             else:
                 file_name = "{}.{}".format(name, self.vcodec)
                 timeline = Timeline(
@@ -1055,6 +1067,8 @@ class Render:
                     tracks,
                     RationalTime(0, self.frame_rate)
                 )
+
+
                 otio.adapters.write_to_file(timeline, file_name)
                 if self.vcodec == "xml":
                     xml_tree = ET.parse(file_name)

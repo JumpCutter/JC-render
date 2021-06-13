@@ -59,6 +59,15 @@ def test_export_edl():
                verbose=False, vcodec='edl')
     r.export()
 
+@pytest.mark.export
+@pytest.mark.ffmpeg
+@pytest.mark.vegasedl
+def test_export_vegasedl():
+    r = Render(JSON_EXAMPLE, './tmp',
+               no_clean=True,
+               # readable=True,
+               verbose=False, vcodec='vegasedl')
+    r.export()
 
 @pytest.mark.export
 @pytest.mark.ffmpeg
