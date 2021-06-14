@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.0.4](https://github.com/JumpCutter/JC-render/compare/v0.0.3...v0.0.4) (06-15-2021)
+
+### Changes
+- __Vegas EDL generator__: Added a new export format. Exporting to Sony Vegas flavour of EDL. `vcodec` value for this format is `vegasedl`.
+
 ## [0.0.3](https://github.com/JumpCutter/JC-render/compare/v0.0.2...v0.0.3) (04-01-2021)
 
 ### Bug Fixes
