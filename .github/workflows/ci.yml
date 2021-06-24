@@ -111,13 +111,14 @@ jobs:
           CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_PFX_PASSWORD }}
           SIGN_TOOL: "C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe"
           SHA1: ${{ secrets.WINDOWS_PFX_SHA1 }}
+          TIMESTAMP_SERVER: "http://timestamp.digicert.com"
         run: |
           touch windows.pfx; `
           echo ${{ secrets.CERTIFICATE_WINDOWS_PFX }} > ".\windows.pfx"; `
           cat ".\windows.pfx"; `
           certutil -f -p "${{ secrets.WINDOWS_PFX_PASSWORD }}" -importpfx ".\windows.pfx"; `
           & "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x86\signtool.exe" `
-          sign /sm /debug /v /sha1 "${{ secrets.WINDOWS_PFX_SHA1 }}" /t "http://tsa.starfieldtech.com" .\dist\render.exe
+          sign /sm /debug /v /sha1 "${{ secrets.WINDOWS_PFX_SHA1 }}" /t "${{ env.TIMESTAMP_SERVER }}" .\dist\render.exe
 
       - name: Artifact
         uses: actions/upload-artifact@v2
