@@ -1,6 +1,6 @@
 {
   "name": "jc-render",
-  "version": "0.0.2-canary.0",
+  "version": "0.0.4",
   "description": "= Renderer :experimental: :description: The render script :toc: left :idseparator: - ifdef::env-github,safe-mode-secure[] :toc: :toc-placement!: endif::[] The shared JumpCutter renderer.",
   "main": "index.js",
   "directories": {
