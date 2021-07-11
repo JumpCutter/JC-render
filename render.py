@@ -1068,7 +1068,6 @@ class Render:
                     RationalTime(0, self.frame_rate)
                 )
 
-
                 otio.adapters.write_to_file(timeline, file_name)
                 if self.vcodec == "xml":
                     xml_tree = ET.parse(file_name)
@@ -1156,7 +1155,7 @@ if __name__ == '__main__':
     )
     codecs_group.add_argument('-vc', '--vcodec', default='h264',
                               help='choose the specific code to output')
-    supported_transfers = ["aaf", "edl", "fcpxml", "otio", "xml"]
+    supported_transfers = ["aaf", "edl", "fcpxml", "otio", "xml", "vegasedl"]
     codecs_group.add_argument('-t', '--transfer',
                               choices=supported_transfers,
                               help="transfer to another software")
