@@ -259,7 +259,7 @@ class Render:
                 probe_all = ffmpeg.probe('{}'.format(file_name), cmd=self.ffprobe_path)
             except Exception as e:
                 self.logger.warning("WHAT IS THIS")  # FIXME: @JUL14N this one's for you buddy:)
-                stderr = e.stderr.decode('ascii').replace('\n', '\n\t')
+                stderr = e.stderr.decode('utf8').replace('\n', '\n\t')
                 self.logger.warning(f"ffprobe stderr:\n\t{stderr}")
             if stream == 'v':
                 self.logger.debug("probe result -\n" + json.dumps(probe_all, indent=2))
