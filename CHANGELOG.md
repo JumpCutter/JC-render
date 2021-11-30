@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.0.7](https://github.com/JumpCutter/JC-render/compare/v0.0.6...v0.0.7) (2021-11-30)
+
+
+## Bug Fixes
+- __ascii__ : stderr from WHAT IS THIS now decoded with utf8 so decode doesn't throw with
+non ascii characters in video file name
 
 ## [0.0.6](https://github.com/JumpCutter/JC-render/compare/v0.0.5...v0.0.6) (2021-07-23)
 
